@@ -9,9 +9,10 @@ import os
 import warnings
 
 warnings.filterwarnings("ignore")
+logging.basicConfig(level=logging.INFO)
 
 
-# streamlit_root_logger = logging.getLogger(streamlit.__name__)
+streamlit_root_logger = logging.getLogger(streamlit.__name__)
 dictionary_api_key = os.environ["DICT_API_KEY"]
 
 # Sample list of words
@@ -199,7 +200,7 @@ def main():
                 else:
                     if st.session_state.index == 6:
                         st.error(f"Oops! The correct answer is {target}. Score : 0 \n\nPlay again to get more points for your team!")
-                        print(f"Name: {st.session_state.name} Score: 0")
+                        streamlit_root_logger.info(f"Name: {st.session_state.name} Score: 0")
                     else:
                         guesses[st.session_state.index] = guess
                         feedback[st.session_state.index] = check_guess(guess, target, letters_and_colors)
@@ -208,13 +209,13 @@ def main():
                         st.session_state.index += 1
 
                         if guess == target:
-                            score = 6 - st.session_state.index
+                            score = 7 - st.session_state.index
                             st.success(f"Congratulations! You guessed the word! Score : {score}. \n\nPlay again to get more points for your team!")
-                            print(f"Name: {st.session_state.name} Score: {score}")
+                            streamlit_root_logger.info(f"Name: {st.session_state.name} Score: {score}")
 
                         elif guess != target and st.session_state.index == 6:
                             st.error(f"Oops! The correct answer is {target}. Score : 0 \n\nPlay again to get more points for your team!")
-                            print(f"Name: {st.session_state.name} Score: 0")
+                            streamlit_root_logger.info(f"Name: {st.session_state.name} Score: 0")
 
             else:
                 st.error("Guess must be {} letters long.".format(len(target)))
