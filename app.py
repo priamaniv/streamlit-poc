@@ -11,7 +11,6 @@ import warnings
 warnings.filterwarnings("ignore")
 logging.basicConfig(level=logging.INFO)
 
-
 streamlit_root_logger = logging.getLogger(streamlit.__name__)
 dictionary_api_key = os.environ["DICT_API_KEY"]
 
@@ -51,7 +50,7 @@ def check_guess(guess, target, letters_and_colors):
 
         else:
             feedback[i] = "gray"
-            if letters_and_colors.get(char) != "green" or letters_and_colors.get(char) != "yellow" :
+            if letters_and_colors.get(char) != "green" or letters_and_colors.get(char) != "yellow":
                 letters_and_colors[char] = "gray"
 
     # second loop to remove any duplicate letters when only one letter
@@ -169,8 +168,7 @@ def main():
         reset_game()
 
     if st.session_state.name == '' or st.session_state.team == '':
-        st.title("""👨‍👩‍👧‍👧 Welcome to Dyuthi and Yuk's Baby Gender Reveal! 👨‍👩‍👧‍👦
-                 Will it be a baby boy, girl, or a mini T-Rex? 🦖 Stay Tuned! """)
+        st.title("""👨‍👩‍👧‍👧 Welcome to Dyuthi and Yuk's Baby Gender Reveal! 👨‍👩‍👧‍👦\n\nWill it be a baby boy, girl, or a mini T-Rex? 🦖 Stay Tuned! """)
         with st.form(key='name_team_form'):
             name = st.text_input("Enter your name:", key="name_input")
             team = st.radio("Select your team:", options=["Boy", "Girl", "Mini T-Rex"], key="team_input")
@@ -183,15 +181,18 @@ def main():
             else:
                 st.error("Please enter your name and select a team.")
     else:
-        st.write(f"{st.session_state.name.capitalize()} for Team {st.session_state.team.capitalize()}!")
+        st.write(f"{st.session_state.name.capitalize()} for Team {st.session_state.team.capitalize()}! Enter your 5-letter word")
         target = st.session_state.target
         guesses = st.session_state.guesses
         feedback = st.session_state.feedback
         letters_and_colors = st.session_state.letters_and_colors
 
         with st.form(key='wordle_form', clear_on_submit=True):
-            guess = st.text_input("Enter a 5-letter word 👇", max_chars=len(target)).lower()
-            submit_button = st.form_submit_button(label="Submit")
+            col1, col2, col3 = st.columns([4, 10, 3])
+            with col1:
+                guess = st.text_input("Enter a 5-letter word", max_chars=len(target), label_visibility="collapsed", placeholder="Enter 5-letter word").lower()
+            with col3:
+                submit_button = st.form_submit_button(label="Submit")
 
         if submit_button:
             guess = guess.lower()
