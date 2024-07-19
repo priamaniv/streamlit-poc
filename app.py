@@ -160,7 +160,6 @@ def display_letters_and_colors(letters_and_colors):
 
 
 def main():
-    st.title("Wordle Game")
 
     if 'name' not in st.session_state:
         st.session_state.name = ''
@@ -170,9 +169,11 @@ def main():
         reset_game()
 
     if st.session_state.name == '' or st.session_state.team == '':
+        st.title("""👨‍👩‍👧‍👧 Welcome to Dyuthi and Yuk's Baby Gender Reveal! 👨‍👩‍👧‍👦
+                 Will it be a baby boy, girl, or a mini T-Rex? 🦖 Stay Tuned! """)
         with st.form(key='name_team_form'):
             name = st.text_input("Enter your name:", key="name_input")
-            team = st.radio("Select your team:", options=["boy", "girl"], key="team_input")
+            team = st.radio("Select your team:", options=["Boy", "Girl", "Mini T-Rex"], key="team_input")
             submit_button = st.form_submit_button(label="Go to the game", on_click=reset_game)
 
         if submit_button:
@@ -182,7 +183,7 @@ def main():
             else:
                 st.error("Please enter your name and select a team.")
     else:
-        st.header(f"Welcome, {st.session_state.name.capitalize()} for Team {st.session_state.team.capitalize()}!")
+        st.write(f"{st.session_state.name.capitalize()} for Team {st.session_state.team.capitalize()}!")
         target = st.session_state.target
         guesses = st.session_state.guesses
         feedback = st.session_state.feedback
