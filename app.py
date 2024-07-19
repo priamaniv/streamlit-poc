@@ -78,7 +78,7 @@ def reset_game():
     st.session_state.index = 0
     st.session_state.letters_and_colors = LETTERS_AND_COLORS
     if st.session_state.name:
-        streamlit_root_logger.info(f"{st.session_state.name} started game, their word is {st.session_state.target}")
+        streamlit_root_logger.info(f"{st.session_state.name} Team: {st.session_state.team} started game, their word is {st.session_state.target}")
 
 
 def go_back():
@@ -89,36 +89,31 @@ def go_back():
 
 def wordle_table(guesses, feedback):
     st.write("""
-            <style>
-            .cell {
-                display: inline-block;
-                width: 2em;
-                height: 2em;
-                text-align: center;
-                vertical-align: middle;
-                line-height: 2em;
-                margin: 0.2em;
-                border-radius: 0.25em;
-                font-size: 1.2em;
-            }
-             .row {
-                display: flex;
-                justify-content: center;
-            }
-            .button-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .play-again {
-                text-align: right;
-                width: 100%;
-            }
-            div[data-testid="column"]:nth-of-type(2){
-                text-align: right;
-            }
-            </style>
-        """, unsafe_allow_html=True)
+        <style>
+        .cell {
+            display: inline-block;
+            width: 2em;
+            height: 2em;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 2em;
+            margin: 0.1em;
+            border-radius: 0.25em;
+            font-size: 1.2em;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+        }
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
     for i, (guess, fb) in enumerate(zip(guesses, feedback)):
         row = "<div class='row'>"
@@ -139,14 +134,15 @@ def display_letters_and_colors(letters_and_colors):
             height: 20px;
             text-align: center;
             vertical-align: middle;
-            margin: 0.2em;
+            margin: 0.1em;
             border-radius: 0.25em;
             color: black;
             font-size: small;
         }
-        .row {
-            display: ruby-text;
-            justify-content: center;
+        .form-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -172,9 +168,11 @@ def main():
     if st.session_state.name == '' or st.session_state.team == '':
         st.title("""👨‍👩‍👧‍👧 Welcome to Dyuthi and Yuk's Baby Gender Reveal! 👨‍👩‍👧‍👦\n\nWill it be a baby boy, girl, or a mini T-Rex? 🦖 Stay Tuned! """)
         with st.form(key='name_team_form'):
+            st.write('<div class="form-container">', unsafe_allow_html=True)
             name = st.text_input("Enter your name:", key="name_input")
             team = st.radio("Select your team:", options=["Boy", "Girl", "Mini T-Rex"], key="team_input")
             submit_button = st.form_submit_button(label="Go to the game", on_click=reset_game)
+            st.write('</div>', unsafe_allow_html=True)
 
         if submit_button:
             if name.strip() != '' and team:
@@ -183,18 +181,17 @@ def main():
             else:
                 st.error("Please enter your name and select a team.")
     else:
-        st.write(f"{st.session_state.name.capitalize()} for Team {st.session_state.team.capitalize()}! Enter your 5-letter word")
+        # st.write(f"{st.session_state.name.capitalize()} for Team {st.session_state.team.capitalize()}! Enter your 5-letter word")
         target = st.session_state.target
         guesses = st.session_state.guesses
         feedback = st.session_state.feedback
         letters_and_colors = st.session_state.letters_and_colors
 
+        st.write('<div class="form-container">', unsafe_allow_html=True)
         with st.form(key='wordle_form', clear_on_submit=True):
-            col1, col2, col3 = st.columns([4, 10, 3])
-            with col1:
-                guess = st.text_input("Enter a 5-letter word", max_chars=len(target), label_visibility="collapsed", placeholder="Enter 5-letter word").lower()
-            with col3:
-                submit_button = st.form_submit_button(label="Submit")
+            guess = st.text_input("Enter a 5-letter word", max_chars=len(target), label_visibility="collapsed", placeholder="Enter 5-letter word").lower()
+            submit_button = st.form_submit_button(label="Submit")
+        st.write('</div>', unsafe_allow_html=True)
 
         if submit_button:
             guess = guess.lower()
@@ -204,7 +201,7 @@ def main():
                 else:
                     if st.session_state.index == 6:
                         st.error(f"Oops! The correct answer is {target}. Score : 0 \n\nPlay again to get more points for your team!")
-                        streamlit_root_logger.info(f"Name: {st.session_state.name} Score: 0")
+                        streamlit_root_logger.info(f"Name: {st.session_state.name} Team: {st.session_state.team} Score: 0")
                     else:
                         guesses[st.session_state.index] = guess
                         feedback[st.session_state.index] = check_guess(guess, target, letters_and_colors)
@@ -215,20 +212,21 @@ def main():
                         if guess == target:
                             score = 7 - st.session_state.index
                             st.success(f"Congratulations! You guessed the word! Score : {score}. \n\nPlay again to get more points for your team!")
-                            streamlit_root_logger.info(f"Name: {st.session_state.name} Score: {score}")
+                            streamlit_root_logger.info(f"Name: {st.session_state.name} Team: {st.session_state.team} Score: {score}")
 
                         elif guess != target and st.session_state.index == 6:
                             st.error(f"Oops! The correct answer is {target}. Score : 0 \n\nPlay again to get more points for your team!")
-                            streamlit_root_logger.info(f"Name: {st.session_state.name} Score: 0")
+                            streamlit_root_logger.info(f"Name: {st.session_state.name} Team: {st.session_state.team} Score: 0")
 
             else:
                 st.error("Guess must be {} letters long.".format(len(target)))
 
-        display_letters_and_colors(letters_and_colors)
         with st.form(key='control_form'):
-            # st.write(f"Allowed Characters: {st.session_state.allowed_chars}")
+
+            display_letters_and_colors(letters_and_colors)
             wordle_table(guesses, feedback)
 
+            st.write('<div class="form-container2">', unsafe_allow_html=True)
             col1, col2 = st.columns(2)
             with col1:
                 if st.form_submit_button("Go Back", on_click=go_back):
@@ -238,6 +236,7 @@ def main():
                 if st.form_submit_button("Play Again", on_click=reset_game):
                     pass
 
+            st.write('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

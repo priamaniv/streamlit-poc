@@ -27,6 +27,12 @@ def display_colored_letters(letters_and_colors):
         .row {
             display: flex;
             justify-content: center;
+            margin-top: 20px;
+        }
+        .form-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -38,13 +44,20 @@ def display_colored_letters(letters_and_colors):
     row += "</div>"
     st.write(row, unsafe_allow_html=True)
 
-
 def main():
     st.title("Colored Letters Display")
 
-    # Display the colored letters
-    display_colored_letters(letters_and_colors)
+    # Form to handle input and submission
+    with st.form(key='name_form'):
+        st.write('<div class="form-container">', unsafe_allow_html=True)
+        name = st.text_input("Enter your name:")
+        submit_button = st.form_submit_button(label="Submit")
+        st.write('</div>', unsafe_allow_html=True)
 
+    if submit_button and name:
+        st.write(f"Hello, {name}!")
+        # Display the colored letters
+        display_colored_letters(letters_and_colors)
 
 if __name__ == "__main__":
     main()
