@@ -77,6 +77,7 @@ def reset_game():
     st.session_state.feedback = FEEDBACKS
     st.session_state.index = 0
     st.session_state.letters_and_colors = LETTERS_AND_COLORS
+    print(f"{st.session_state.name} started game, their word is {st.session_state.target}")
 
 
 def go_back():
