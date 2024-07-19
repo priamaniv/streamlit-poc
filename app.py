@@ -68,7 +68,7 @@ def check_guess(guess, target, letters_and_colors):
 def is_valid_word(guess):
     dictionary_api = f"https://dictionaryapi.com/api/v3/references/learners/json/{guess}?key={dictionary_api_key}"
     result = requests.get(dictionary_api, verify=False)
-    return result.status_code == 200
+    return type(result.json()[0]) != str
 
 
 def reset_game():
